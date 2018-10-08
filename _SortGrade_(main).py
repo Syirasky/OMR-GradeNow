@@ -35,7 +35,7 @@ from pandas import DataFrame
 import errno
 import os
 from datetime import datetime
-import _GetSection
+import _GetSection as gSect
 
 def findAllCnts(img):
 	kernel = np.ones((3,3), np.uint8) #3
@@ -177,7 +177,16 @@ def gradeNow(image):
 
 
 
-img =  cv2.imread("14_section1.jpg")
+imgname = "a.jpg"
+path = os.path.join(os.getcwd(),imgname)
+image = cv2.imread(imgname)
+image = gSect.resizeSmaller(image)
+path = gSect.save_qSect(imgname)
+gSect.divideSection(image,path)
+
+sectname = "14_section1.jpg"
+sectpath = os.path.join(path,sectname)
+img =  cv2.imread(sectpath)
 
 gradeNow(img)
 cv2.waitKey(0)
