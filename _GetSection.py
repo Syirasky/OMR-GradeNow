@@ -72,14 +72,14 @@ def divideSection(bubbleregion,path):
 			
 			heightRange = int((y)/2)
 			
-			print("heightRange",heightRange)
-			print()
+			#print("heightRange",heightRange)
+			#print()
 			bottombound = heightRange - 20
 
 			for l in range(2):
-				print("\ttopbound",topbound)
+				#print("\ttopbound",topbound)
 				
-				print("\t\tbottombound",bottombound)
+				#print("\t\tbottombound",bottombound)
 				qSect.insert(l,(sect[i][topbound:bottombound, leftbound:rightbound])) #insert question part into qSect
 				
 				topbound = bottombound - 10 
@@ -88,7 +88,7 @@ def divideSection(bubbleregion,path):
 				#cv2.imwrite(os.path.join(path , str(l)+"a_an1.jpg"),qSect[l])
 				
 			for i in range(len(qSect)):
-				print()
+				
 				
 				widthQ,heightQ = qSect[i].shape[:2]
 				
@@ -101,23 +101,23 @@ def divideSection(bubbleregion,path):
 					topbound = 0
 					
 					
-					print("heightRange",heightRange)
+					#print("heightRange",heightRange)
 					
 					bottombound = heightRange + 30
 
 					for l in range(8):
-						print("\ttopbound",topbound)
+						#print("\ttopbound",topbound)
 						
-						print("\t\tbottombound",bottombound)
+						#print("\t\tbottombound",bottombound)
 						byQsect1.insert(listtrack,(qSect[i][topbound:bottombound, leftbound:rightbound])) #insert question part into qSect
-						print(l)
+						#print(l)
 						topbound = bottombound - 22
 						if l != 6:
 							bottombound = bottombound + heightRange + 28
 						else:
 							bottombound = bottombound + heightRange + 20
 						
-						cv2.imwrite(os.path.join(path , str(listtrack)+"_section1.jpg"),byQsect1[listtrack])
+						cv2.imwrite(os.path.join(path , "0"+str(listtrack)+"_section1.jpg"),byQsect1[listtrack])
 						listtrack = listtrack + 1
 				
 				if (i == 1):
@@ -127,23 +127,26 @@ def divideSection(bubbleregion,path):
 					rightbound = widthQ #the lesser the value, the "right"-er the output
 					topbound = 0
 				
-					print("heightRange",heightRange)
+					#print("heightRange",heightRange)
 					
 					bottombound = heightRange + 30	
 					
 					for l in range(7):
 						byQsect1.insert(listtrack,(qSect[i][topbound:bottombound, leftbound:rightbound])) #insert question part into qSect
-						print(l)
+						#print(l)
 						topbound = bottombound - 22
 						if l != 6:
 							bottombound = bottombound + heightRange + 28
 						else:
 							bottombound = bottombound + heightRange + 20
-						
-						cv2.imwrite(os.path.join(path , str(listtrack)+"_section1.jpg"),byQsect1[listtrack])
+						if listtrack <10:
+							headname = "0"+str(listtrack)
+						else:
+							headname = str(listtrack)
+						cv2.imwrite(os.path.join(path ,headname+"_section1.jpg"),byQsect1[listtrack])
 						listtrack = listtrack + 1	
 							
-				print(widthQ,heightQ) 
+				#print(widthQ,heightQ) 
 			
 		else:
 			print("second part")
@@ -161,8 +164,8 @@ def divideSection(bubbleregion,path):
 def divideSmaller(img):
 	height,width = img.shape[:2]
 	boxheight = int(height/15)
-	print(boxheight)
-	return boxheight
+	#print(boxheight)
+	#return boxheight
 def resizeSmaller(img):
 	height,width = img.shape[:2]
 	height = int((height/2) * 1)
@@ -173,8 +176,8 @@ def resizeSmaller(img):
 def viewPixel(img): 
 		
 	height,width = img.shape[:2]
-	print("height", height)
-	print("width", width)
+	#print("height", height)
+	#print("width", width)
 	return
 
 def save_qSect(imgname):
@@ -185,7 +188,6 @@ def save_qSect(imgname):
 	except OSError as e:
 		if e.errno != errno.EEXIST:
 			raise  # This was not a "directory exist" error..
-	print(mydir)
+	#print(mydir)
 	return mydir
 
-print ()

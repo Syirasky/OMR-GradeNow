@@ -36,6 +36,7 @@ import errno
 import os
 from datetime import datetime
 import _GetSection as gSect
+from os import walk 
 
 def findAllCnts(img):
 	kernel = np.ones((3,3), np.uint8) #3
@@ -51,11 +52,9 @@ def findAllCnts(img):
 	
 
 	cv2.drawContours(img,cnts,-1,(0,12,255),1)
-	
-	cv2.imshow("test2",img)
 	# done find contours
 	docCnt = None
-	print(len(cnts))
+	#print(len(cnts))
 	# ensure that at least one contour was found
 	return cnts
 
@@ -85,7 +84,7 @@ def doThreshold(im):
 
 def filter_contours(brcnts):
 	# [FILTER] filter the bubble from other contours
-	print("brcnts length ",len(brcnts))
+	#print("brcnts length ",len(brcnts))
 
 	newbrcnts = []
 	for c in brcnts:
@@ -93,8 +92,8 @@ def filter_contours(brcnts):
 				
 		if area > 100 and area < 850:
 			perimeter = cv2.arcLength(c,True)
-			print("area,perimeter")
-			print(area,perimeter)
+			#print("area,perimeter")
+			#print(area,perimeter)
 			
 			if perimeter < 120 and perimeter > 68:
 				newbrcnts.append(c)
@@ -102,7 +101,7 @@ def filter_contours(brcnts):
 	bubblecnts = []
 	 
 	# loop over the contours
-	print("ar,w,h")
+	#print("ar,w,h")
 		
 	for c in newbrcnts:
 		# compute the bounding box of the contour, then use the
@@ -110,7 +109,7 @@ def filter_contours(brcnts):
 		(x, y, w, h) = cv2.boundingRect(c)
 		ar = w / float(h)
 		
-		print(ar,w,h)
+		#print(ar,w,h)
 		# in order to label the contour as a question, region
 		# should be sufficiently wide, sufficiently tall, and
 		# have an aspect ratio approximately equal to 1
@@ -151,7 +150,7 @@ def gradeNow(image):
 	edged = cv2.Canny(blurred, 75, 200)
 
 	thresh = cv2.threshold(gray, 0, 255,cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
-	cv2.imshow("thresh",thresh)
+	#cv2.imshow("thresh",thresh)
 	
 	filteredcnts = filter_contours(cnts)
 	sortedcnts = sort_contours(filteredcnts)
@@ -168,27 +167,44 @@ def gradeNow(image):
 			# bubble area
 			mask = cv2.bitwise_and(thresh, thresh, mask=mask)
 			total = cv2.countNonZero(mask)
-			print("Total",total)
+			#print("Total",total)
 			if bubbled is None or total > bubbled[0]:
 				bubbled = (total, j)
-			print("bubbled[1]")
-			print(bubbled[1])
-	return
+			#print("bubbled[1]")
+			#print(bubbled[1])
+	
+	return bubbled[1] 
 
+def first_2chars(x):
+    return(x[0:2])
 
-
-imgname = "a.jpg"
+ABCDvalue = {0:'A',1:'B',2:'C',3:'D',99:'Error'}
+imgname = "d.jpg"
 path = os.path.join(os.getcwd(),imgname)
 image = cv2.imread(imgname)
 image = gSect.resizeSmaller(image)
 path = gSect.save_qSect(imgname)
 gSect.divideSection(image,path)
 
-sectname = "14_section1.jpg"
-sectpath = os.path.join(path,sectname)
-img =  cv2.imread(sectpath)
 
-gradeNow(img)
+f = []
+answer = list()
+for (dirpath, dirnames, filenames) in walk(path):
+    f.extend(filenames)
+
+f = sorted(f, key = first_2chars)   
+
+for i in range(len(f)):
+	sectname = f[i]
+	sectpath = os.path.join(path,sectname)
+	img = cv2.imread(sectpath)
+	answer.insert(i,gradeNow(img))
+
+
+for i in range(len(f)):
+	print(ABCDvalue[answer[i]])
+
+
 cv2.waitKey(0)
 
 
