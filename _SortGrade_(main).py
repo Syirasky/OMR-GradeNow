@@ -89,17 +89,16 @@ def filter_contours(brcnts):
 	newbrcnts = []
 	for c in brcnts:
 		area = cv2.contourArea(c)
+		perimeter = cv2.arcLength(c,True)
 				
 		if area > 100 and area < 850:
-			perimeter = cv2.arcLength(c,True)
-			#print("area,perimeter")
-			#print(area,perimeter)
 			
-			if perimeter < 120 and perimeter > 68:
+			if perimeter < 290 and perimeter > 68:
 				newbrcnts.append(c)
+			
 	# done process
 	bubblecnts = []
-	 
+	
 	# loop over the contours
 	#print("ar,w,h")
 		
@@ -109,11 +108,10 @@ def filter_contours(brcnts):
 		(x, y, w, h) = cv2.boundingRect(c)
 		ar = w / float(h)
 		
-		#print(ar,w,h)
 		# in order to label the contour as a question, region
 		# should be sufficiently wide, sufficiently tall, and
 		# have an aspect ratio approximately equal to 1
-		if w >= 19 and h >= 19 and ar >= 0.9 and ar <= 1.3:
+		if w >= 19 and h >= 19 and ar >= 0.7 and ar <= 1.3:
 			bubblecnts.append(c)
 
 	return bubblecnts
@@ -143,18 +141,20 @@ def sort_contours(cnts, method="left-to-right"):
 
 def gradeNow(image):
 	
-	cnts = findAllCnts(image.copy())
+	#cnts = findAllCnts(image.copy())
 	
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-	blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+	blurred = cv2.GaussianBlur(gray, (3, 3), 0)
 	edged = cv2.Canny(blurred, 75, 200)
 
 	thresh = cv2.threshold(gray, 0, 255,cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
 	#cv2.imshow("thresh",thresh)
+	_,cnts,_ = cv2.findContours(thresh,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
 	
 	filteredcnts = filter_contours(cnts)
 	sortedcnts = sort_contours(filteredcnts)
-	
+	print("cnts,filtered,sorted")
+	print(len(cnts),len(filteredcnts),len(sortedcnts))
 	bubbled = None
 	for (j, c) in enumerate(sortedcnts):
 			# construct a mask that reveals only the current
@@ -179,7 +179,7 @@ def first_2chars(x):
     return(x[0:2])
 
 ABCDvalue = {0:'A',1:'B',2:'C',3:'D',99:'Error'}
-imgname = "d.jpg"
+imgname = "h.jpg"
 path = os.path.join(os.getcwd(),imgname)
 image = cv2.imread(imgname)
 image = gSect.resizeSmaller(image)
@@ -189,20 +189,22 @@ gSect.divideSection(image,path)
 
 f = []
 answer = list()
+
 for (dirpath, dirnames, filenames) in walk(path):
     f.extend(filenames)
 
 f = sorted(f, key = first_2chars)   
 
-for i in range(len(f)):
+for i in range(20):
 	sectname = f[i]
 	sectpath = os.path.join(path,sectname)
 	img = cv2.imread(sectpath)
-	answer.insert(i,gradeNow(img))
+	answer.insert(i,gradeNow(img)) #<------------ gradeNow(img) here!! it do find, filter, sort, evaluate contours
 
 
-for i in range(len(f)):
-	print(ABCDvalue[answer[i]])
+numOfQuestion = 20
+for i in range(numOfQuestion): 
+	print(i+1,":",ABCDvalue[answer[i]])
 
 
 cv2.waitKey(0)

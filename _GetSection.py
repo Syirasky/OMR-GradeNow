@@ -46,10 +46,6 @@ def divideSection(bubbleregion,path):
 	WidthStart = 0
 	sect = list()
 	qSect = list()
-	byQsect1 = list()
-	byQsect2 = list()
-	byQsect3 = list()
-	listtrack = 0
 	for i in range(2):
 		WidthEnd = int(width * (i+1)/2)
 		print("******* Process for part",i,"***********")
@@ -63,97 +59,15 @@ def divideSection(bubbleregion,path):
 		
 		sect.insert(i,(bubbleregion[120:Y-30 , WidthStart+30:WidthEnd])) # divide the part between two // sect[0] ada 31 - 45 question , sect[1] ada 46-selebihnya 
 		
-		if i == 0: #   ************ process sect[0] ***************** #
+		if i == 0: 	#   ************ process sect[0] ***************** #
 
-			y,x = sect[i].shape[:2]
-			leftbound = 90
-			rightbound = x - 50 #the lesser the value, the "right"-er the output
-			topbound = 0
+			process_part0(sect[i],path)
 			
-			heightRange = int((y)/2)
-			
-			#print("heightRange",heightRange)
-			#print()
-			bottombound = heightRange - 20
+		else:		#   ************ process sect[1] ***************** #
 
-			for l in range(2):
-				#print("\ttopbound",topbound)
-				
-				#print("\t\tbottombound",bottombound)
-				qSect.insert(l,(sect[i][topbound:bottombound, leftbound:rightbound])) #insert question part into qSect
-				
-				topbound = bottombound - 10 
-				
-				bottombound = bottombound + heightRange 
-				#cv2.imwrite(os.path.join(path , str(l)+"a_an1.jpg"),qSect[l])
-				
-			for i in range(len(qSect)):
-				
-				
-				widthQ,heightQ = qSect[i].shape[:2]
-				
-				if (i == 0):
-					
-					heightRange = int((heightQ)/7)
-					
-					leftbound = 80
-					rightbound = widthQ #the lesser the value, the "right"-er the output
-					topbound = 0
-					
-					
-					#print("heightRange",heightRange)
-					
-					bottombound = heightRange + 30
-
-					for l in range(8):
-						#print("\ttopbound",topbound)
-						
-						#print("\t\tbottombound",bottombound)
-						byQsect1.insert(listtrack,(qSect[i][topbound:bottombound, leftbound:rightbound])) #insert question part into qSect
-						#print(l)
-						topbound = bottombound - 22
-						if l != 6:
-							bottombound = bottombound + heightRange + 28
-						else:
-							bottombound = bottombound + heightRange + 20
-						
-						cv2.imwrite(os.path.join(path , "0"+str(listtrack)+"_section1.jpg"),byQsect1[listtrack])
-						listtrack = listtrack + 1
-				
-				if (i == 1):
-					heightRange = int((heightQ)/7)
-					
-					leftbound = 80
-					rightbound = widthQ #the lesser the value, the "right"-er the output
-					topbound = 0
-				
-					#print("heightRange",heightRange)
-					
-					bottombound = heightRange + 30	
-					
-					for l in range(7):
-						byQsect1.insert(listtrack,(qSect[i][topbound:bottombound, leftbound:rightbound])) #insert question part into qSect
-						#print(l)
-						topbound = bottombound - 22
-						if l != 6:
-							bottombound = bottombound + heightRange + 28
-						else:
-							bottombound = bottombound + heightRange + 20
-						if listtrack <10:
-							headname = "0"+str(listtrack)
-						else:
-							headname = str(listtrack)
-						cv2.imwrite(os.path.join(path ,headname+"_section1.jpg"),byQsect1[listtrack])
-						listtrack = listtrack + 1	
-							
-				#print(widthQ,heightQ) 
-			
-		else:
 			print("second part")
-		
-		
-		
-				
+			process_part1(sect[i],path)	
+			
 		WidthStart = WidthEnd
 		
 		
@@ -161,6 +75,152 @@ def divideSection(bubbleregion,path):
 		
 	return sect,qSect
 
+def process_part0(img,path):
+
+	qSect = list()
+	byQsect1 = list()
+	listtrack = 0
+	y,x = img.shape[:2]
+	leftbound = 90
+	rightbound = x - 50 #the lesser the value, the "right"-er the output
+	topbound = 0
+	
+	heightRange = int((y)/2) #divide the section into two
+	
+	#print("heightRange",heightRange)
+	#print()
+	bottombound = heightRange - 20
+
+	for l in range(2):
+		#print("\ttopbound",topbound)
+		
+		#print("\t\tbottombound",bottombound)
+		qSect.insert(l,(img[topbound:bottombound, leftbound:rightbound])) #insert both question section into qSect
+		
+		topbound = bottombound - 10 
+		
+		bottombound = bottombound + heightRange 
+		#cv2.imwrite(os.path.join(path , str(l)+"a_an1.jpg"),qSect[l])
+		
+	for i in range(len(qSect)):
+		
+		
+		widthQ,heightQ = qSect[i].shape[:2]
+		
+		if (i == 0):
+			
+			heightRange = int((heightQ)/7)
+			
+			leftbound = 80
+			rightbound = widthQ #the lesser the value, the "right"-er the output
+			topbound = 0
+			
+			
+			#print("heightRange",heightRange)
+			
+			bottombound = heightRange + 30
+
+			for l in range(8):
+				#print("\ttopbound",topbound)
+				
+				#print("\t\tbottombound",bottombound)
+				byQsect1.insert(listtrack,(qSect[i][topbound:bottombound, leftbound:rightbound])) #insert question part into qSect
+				#print(l)
+				topbound = bottombound - 22
+				if l != 6:
+					bottombound = bottombound + heightRange + 28
+				else:
+					bottombound = bottombound + heightRange + 20
+				
+				cv2.imwrite(os.path.join(path , "0"+str(listtrack)+"_section1.jpg"),byQsect1[listtrack])
+				listtrack = listtrack + 1
+		
+		if (i == 1):
+			heightRange = int((heightQ)/7)
+			
+			leftbound = 80
+			rightbound = widthQ #the lesser the value, the "right"-er the output
+			topbound = 0
+		
+			#print("heightRange",heightRange)
+			
+			bottombound = heightRange + 30	
+			
+			for l in range(7):
+				byQsect1.insert(listtrack,(qSect[i][topbound:bottombound, leftbound:rightbound])) #insert question part into qSect
+				#print(l)
+				topbound = bottombound - 22
+				if l != 6:
+					bottombound = bottombound + heightRange + 28
+				else:
+					bottombound = bottombound + heightRange + 20
+				if listtrack <10:
+					headname = "0"+str(listtrack)
+				else:
+					headname = str(listtrack)
+				cv2.imwrite(os.path.join(path ,headname+"_section1.jpg"),byQsect1[listtrack])
+				listtrack = listtrack + 1	
+					
+		#print(widthQ,heightQ) 
+	return
+	
+def process_part1(img,path):
+	
+	qSect = list()
+	byQsect1 = list()
+	listtrack = 15
+	k = 0
+	y,x = img.shape[:2]
+	leftbound = 60
+	rightbound = x - 70 #the lesser the value, the "right"-er the output
+	topbound = 0
+
+	heightRange = int((y)/2)
+
+	print("heightRange",heightRange)
+	#print()
+	bottombound = heightRange 
+
+	for l in range(2):
+		
+		qSect.insert(l,(img[topbound:bottombound, leftbound:rightbound])) #insert question part into qSect
+		
+		
+		topbound = bottombound - 10 
+		
+		bottombound = bottombound + heightRange 
+	
+	print(len(qSect))	
+	for i in range(len(qSect)):	
+		widthQ,heightQ = qSect[i].shape[:2] 
+		
+		if i == 0:
+			print(l,widthQ,heightQ) 
+			heightRange = int((heightQ)/7)
+			
+			leftbound = 0
+			rightbound = widthQ - 330 #the lesser the value, the "right"-er the output
+			topbound = 0	
+			#print("heightRange",heightRange)
+			bottombound = heightRange + 30
+			for l in range(8):
+				#print("\ttopbound",topbound)
+				
+				#print("\t\tbottombound",bottombound)
+				byQsect1.insert(k,(qSect[i][topbound:bottombound, leftbound:rightbound])) #insert question part into qSect
+				#print(l)
+				topbound = bottombound - 22
+				bottombound = bottombound + heightRange + 20
+				
+				cv2.imwrite(os.path.join(path , str(listtrack)+"_section2.jpg"),byQsect1[k])
+				listtrack = listtrack + 1
+				k = k + 1
+
+		else:
+			print(l,widthQ,heightQ) 
+			
+	return
+	 
 def divideSmaller(img):
 	height,width = img.shape[:2]
 	boxheight = int(height/15)
@@ -173,12 +233,6 @@ def resizeSmaller(img):
 	resized_img = cv2.resize(img,(width,height))
 	return resized_img
 
-def viewPixel(img): 
-		
-	height,width = img.shape[:2]
-	#print("height", height)
-	#print("width", width)
-	return
 
 def save_qSect(imgname):
 	strname = imgname+"_"+datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
