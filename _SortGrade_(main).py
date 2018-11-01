@@ -139,15 +139,23 @@ def sort_contours(cnts, method="left-to-right"):
 	# return the list of sorted contours and bounding boxes
 	return cnts
 
-def gradeNow(image):
+def gradeNow(image,i):
 	
 	#cnts = findAllCnts(image.copy())
+	kernel = np.ones((3,3), np.uint8) #3 ++
+	image = doMorphologyEx(image, cv2.MORPH_OPEN, kernel)# ++
 	
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 	blurred = cv2.GaussianBlur(gray, (3, 3), 0)
 	edged = cv2.Canny(blurred, 75, 200)
+	
 
+	
 	thresh = cv2.threshold(gray, 0, 255,cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
+	
+	kernel = np.ones((5, 5), np.uint8)# ++
+	thresh = doMorphologyEx(thresh, cv2.MORPH_CLOSE, kernel)# ++
+	
 	#cv2.imshow("thresh",thresh)
 	_,cnts,_ = cv2.findContours(thresh,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
 	
@@ -172,14 +180,17 @@ def gradeNow(image):
 				bubbled = (total, j)
 			#print("bubbled[1]")
 			#print(bubbled[1])
-	
+	if(i==11):
+		cv2.drawContours(image,sortedcnts,-1,255,2)
+		cv2.imshow("img 12",image)
+		
 	return bubbled[1] 
 
 def first_2chars(x):
     return(x[0:2])
 
 ABCDvalue = {0:'A',1:'B',2:'C',3:'D',99:'Error'}
-imgname = "h.jpg"
+imgname = "h1.jpg"
 path = os.path.join(os.getcwd(),imgname)
 image = cv2.imread(imgname)
 image = gSect.resizeSmaller(image)
@@ -199,12 +210,14 @@ for i in range(20):
 	sectname = f[i]
 	sectpath = os.path.join(path,sectname)
 	img = cv2.imread(sectpath)
-	answer.insert(i,gradeNow(img)) #<------------ gradeNow(img) here!! it do find, filter, sort, evaluate contours
-
+	print(i)
+	answer.insert(i,gradeNow(img,i)) #<------------ gradeNow(img) here!! it do find, filter, sort, evaluate contours
+	
 
 numOfQuestion = 20
 for i in range(numOfQuestion): 
 	print(i+1,":",ABCDvalue[answer[i]])
+
 
 
 cv2.waitKey(0)
