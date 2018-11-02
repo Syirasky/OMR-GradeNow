@@ -7,6 +7,7 @@ Required Package:<br/>
   - pandas
   - scipy
   - imutils
+<br/>
 Notes: To change to another image, change the image name at imagename variable. <br/> 
 To run this project, you need to snap omr paper image with my android app (https://github.com/Syirasky/androidsajatest1). <br/>
 
