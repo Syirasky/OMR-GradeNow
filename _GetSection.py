@@ -219,7 +219,41 @@ def process_part1(img,path):
 
 		else:
 			#[debug]	print(l,widthQ,heightQ) 
-			haa = 1 + 2
+			#haa = 1 + 2
+			extraquestion(qSect[i],listtrack,path)
+	return
+	
+
+
+def extraquestion(img,listtrack,path):
+	qSect = list()
+	byQsect1 = list()
+	widthQ,heightQ = img.shape[:2] 
+	heightRange = int((heightQ)/7)
+	k = 0
+	
+	leftbound = 0
+	rightbound = widthQ - 280 #the lesser the value, the "right"-er the output
+	topbound = 0	
+	
+	print("heightRange",heightRange)
+	
+	bottombound = heightRange + 30	
+	
+	for l in range(7):
+		byQsect1.insert(k,(img[topbound:bottombound, leftbound:rightbound])) #insert question part into qSect
+		#print(l)
+		topbound = bottombound - 22
+		if l != 6:
+			bottombound = bottombound + heightRange + 18
+		else:
+			bottombound = bottombound + heightRange + 10
+		if listtrack <10:
+			headname = str(listtrack)
+		else:
+			headname = str(listtrack)
+		cv2.imwrite(os.path.join(path ,headname+"_section1.jpg"),byQsect1[k])
+		listtrack = listtrack + 1	
 	return
 	 
 def divideSmaller(img):

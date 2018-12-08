@@ -39,8 +39,8 @@ import _GetSection as gSect
 from os import walk 
 import sys
 
-#correct_answer = sys.argv[1]
-correct_answer = "ACBADCCADBDDDADDCCAD"
+#correct_answer = sys.argv[1]ACBADCCADBDDDADDCCAD
+correct_answer = "AAAAAAAAAAAAAAAAAAAA"
 
 def findAllCnts(img):
 	kernel = np.ones((3,3), np.uint8) #3
@@ -170,8 +170,8 @@ def gradeNow(image,i):
 	#cv2.waitKey(0)#[debug]
 	filteredcnts = filter_contours(cnts)
 	sortedcnts = sort_contours(filteredcnts)
-	#print("cnts,filtered,sorted")#[debug]
-	#print(len(cnts),len(filteredcnts),len(sortedcnts))#[debug]
+	print("cnts,filtered,sorted")#[debug]
+	print(len(cnts),len(filteredcnts),len(sortedcnts))#[debug]
 	bubbled = None
 	for (j, c) in enumerate(sortedcnts):
 			# construct a mask that reveals only the current
@@ -206,6 +206,7 @@ def remove_shadow(img):
 	_, thr_img = cv2.threshold(norm_img, 230, 0, cv2.THRESH_TRUNC)
 	cv2.normalize(thr_img, thr_img, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8UC1)
 	#cv2.imshow("test",thr_img)
+	#cv2.waitKey(0)
 	return thr_img
 
 
@@ -221,7 +222,7 @@ def getTotalMark(studentanswer,correctanswer,bil):
 	return score
 
 ABCDvalue = {0:'A',1:'B',2:'C',3:'D',99:'Error'}
-imgname = "pelik.jpg"
+imgname = "mid1.jpg"
 path = os.path.join(os.getcwd(),imgname)
 image = cv2.imread(imgname)
 path = gSect.save_qSect(imgname)
@@ -250,7 +251,7 @@ strStudentAnswer=[]
 
 for i in range(numOfQuestion): 
 	strStudentAnswer.append(ABCDvalue[answer[i]])
-	#print(i+1,":",strStudentAnswer[i])
+	print(i+1,":",strStudentAnswer[i])
 
 # ACBADCCADBDDDADDCCAD
 
@@ -258,4 +259,26 @@ print(getTotalMark(strStudentAnswer,correct_answer,numOfQuestion))
 
 cv2.waitKey(0)
 
+"""
+1 : A
+2 : D
+3 : B
+4 : A
+5 : D
+6 : C
+7 : C
+8 : A
+9 : D
+10 : B
+11 : C
+12 : D
+13 : D
+14 : C
+15 : D
+16 : D
+17 : C
+18 : C
+19 : A
+20 : D
+"""
 

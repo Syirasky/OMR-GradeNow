@@ -203,7 +203,7 @@ def getTotalMark(studentanswer,correctanswer,bil):
 	return score
 
 ABCDvalue = {0:'A',1:'B',2:'C',3:'D',99:'Error'}
-imgname = "OMR_1543517306516.jpg"
+imgname = "pelik.jpg"
 path = os.path.join(os.getcwd(),imgname)
 image = cv2.imread(imgname)
 path = gSect.save_qSect(imgname)
