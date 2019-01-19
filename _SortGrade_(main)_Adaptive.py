@@ -40,7 +40,7 @@ from os import walk
 import sys
 
 #correct_answer = sys.argv[1]ACBADCCADBDDDADDCCAD
-correct_answer = "AAAAAAAAAAAAAAAAAAAA"
+correct_answer = "AAAAAAAAAAAAAAAAAAAAAAAAA"
 
 def findAllCnts(img):
 	kernel = np.ones((3,3), np.uint8) #3
@@ -173,6 +173,8 @@ def gradeNow(image,i):
 	print("cnts,filtered,sorted")#[debug]
 	print(len(cnts),len(filteredcnts),len(sortedcnts))#[debug]
 	bubbled = None
+	all_pixel_count = 0
+	count_lorek = 0
 	for (j, c) in enumerate(sortedcnts):
 			# construct a mask that reveals only the current
 			# "bubble" for the question
@@ -185,15 +187,32 @@ def gradeNow(image,i):
 			mask = cv2.bitwise_and(thresh, thresh, mask=mask)
 			total = cv2.countNonZero(mask)
 			#print("Total",total)
+			all_pixel_count = total + all_pixel_count
+			
+			#total pixel utk lorek mesti 400 ke atas (total)
+			if total > 390:
+				count_lorek = count_lorek + 1 #count for any marked answer
+			
+			
 			if bubbled is None or total > bubbled[0]:
-				bubbled = (total, j)
+					bubbled = (total, j)
+			
 				#[debug]	print("bubbled[1]")
-				#[debug]	print(bubbled[1])
-			#if(i==1):
-				#cv2.drawContours(image,sortedcnts,-1,255,2)#[debug]
-				#cv2.imshow("img 11",image) #[debug]
-				#cv2.imshow("thresh",thresh)#[debug]
+				#print(bubbled[0])
+			#if(i==22 or i==23 or i==6 or i==17):
+			#	cv2.drawContours(image,sortedcnts,-1,255,1)#[debug]
+			#	cv2.imshow("img 11",image) #[debug]
+			#	cv2.imshow("thresh",thresh)#[debug]
 	#	cv2.waitKey(0)
+
+			print(i,":",total)
+	avg_pixel_count = all_pixel_count / 4
+	if(count_lorek <1 or count_lorek > 1):
+		bubbled = list(bubbled)
+		bubbled[1]= 99
+		bubbled = tuple(bubbled)
+	print(i,": avg_pixel_count = ",avg_pixel_count)
+	
 	return bubbled[1] 
 
 def remove_shadow(img):
@@ -208,6 +227,7 @@ def remove_shadow(img):
 	#cv2.imshow("test",thr_img)
 	#cv2.waitKey(0)
 	return thr_img
+	
 
 
 def first_2chars(x):
@@ -222,7 +242,7 @@ def getTotalMark(studentanswer,correctanswer,bil):
 	return score
 
 ABCDvalue = {0:'A',1:'B',2:'C',3:'D',99:'Error'}
-imgname = "mid1.jpg"
+imgname = "OMR_1543517306516.jpg"
 path = os.path.join(os.getcwd(),imgname)
 image = cv2.imread(imgname)
 path = gSect.save_qSect(imgname)
@@ -237,7 +257,9 @@ for (dirpath, dirnames, filenames) in walk(path):
 
 f = sorted(f, key = first_2chars)   
 
-for i in range(20):
+numOfQuestion = len(correct_answer)
+
+for i in range(numOfQuestion):
 	sectname = f[i]
 	sectpath = os.path.join(path,sectname)
 	img = cv2.imread(sectpath)
@@ -245,7 +267,6 @@ for i in range(20):
 	answer.insert(i,gradeNow(img,i)) #<------------ gradeNow(img) here!! it do find, filter, sort, evaluate contours
 	
 
-numOfQuestion = 20
 
 strStudentAnswer=[]
 
